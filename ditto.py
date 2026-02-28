@@ -1,42 +1,47 @@
+# ditto.py
 import re
+from itertools import product
 
 allowed_types = [str, int, float, list]
 
 class ditto:
     def __init__(self, phrase):
         self.rules = []
+
         def r(m):
             text = m.group(1).strip()
-            if text == "":
-                self.rules.append((None,None))
+            if not text:
+                self.rules.append((object, None))
                 return "{}"
-            t,l = text.split(",")
-            self.rules.append((t,l))
+            
+            parts = [p.strip() for p in text.split(",")]
+            if len(parts) == 2:
+                t_str, label = parts
+                t = next((typ for typ in allowed_types if typ.__name__ == t_str), object)
+            else:
+                t, label = object, None
+            self.rules.append((t, label))
             return "{}"
+
         self.template = re.sub(r"\{([^}]*)\}", r, phrase)
 
     def __call__(self, *args):
-        # find the first arg that is a list to expand
-        expanded = None
-        new_args = []
-        for v in args:
-            if isinstance(v, list):
-                expanded = v
-            else:
-                new_args.append(v)
+        lists = [v for v in args if isinstance(v, list)]
+        scalars = [v for v in args if not isinstance(v, list)]
 
-        # if no list, just normal formatting
-        if not expanded:
-            for v,(t,l) in zip(args,self.rules):
-                if t != "*" and not any(isinstance(v,typ) and typ.__name__==t for typ in allowed_types):
-                    raise TypeError
-            exec(self.template.format(*args))
+        if not lists:
+            self._check_types(args)
+            print(self.template.format(*args))
             return
 
-        # if list, run once per element in the list
-        for item in expanded:
-            current_args = [item] + new_args
-            for v,(t,l) in zip(current_args,self.rules):
-                if t != "*" and not any(isinstance(v,typ) and typ.__name__==t for typ in allowed_types):
-                    raise TypeError
-            exec(self.template.format(*current_args))
+        for combo in product(*lists):
+            current_args = combo + tuple(scalars)
+            self._check_types(current_args)
+            print(self.template.format(*current_args))
+
+    def _check_types(self, args):
+        for v, (t, _) in zip(args, self.rules):
+            if t is object:
+                continue
+            if not isinstance(v, t):
+                raise TypeError(f"Expected type {t.__name__} but got {type(v).__name__}")

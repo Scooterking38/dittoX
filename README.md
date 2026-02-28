@@ -1,86 +1,57 @@
-# ditto.py
+# 🚀 Ditto.py
 
-`ditto.py` is a minimal builder-style template executor for Python.
-It allows you to define a template with placeholders (`{}`) and rules for type and length, then dynamically insert values and execute Python code.
-
----
-
-## Features
-
-- Template strings with `{type,length}` placeholders
-- Type and length validation
-- Optional skipping of type/length checks using `*`
-- Simple execution using `exec`
-- Supports passing lists to expand over multiple values
+**Ditto** is a **Python mini-engine** for generating and executing **dynamic code templates** — fast, readable, and incredibly flexible.  
 
 ---
 
-## Installation
+## ✨ Key Features
 
-You can simply download `ditto.py` and import it in your project:
-
-from ditto import ditto
-
-No dependencies besides Python 3.8+.
-
----
-
-## Usage
-
-### Basic Example
-
-from ditto import ditto
-
-d = ditto("{str,5:7} = {}")
-d("hello", "5**2")
-
-print(hello)  # 25
-
-### Skipping Checks with `*`
-
-d = ditto("{*,3:4} = {}")
-d([1,2,3], "sum([1,2,3])")  # type ignored, length checked
-
-### Type Validation Against Allowed Types
-
-from ditto import allowed_types
-allowed_types  # e.g., [str, int, float, list]
-
-- The type in `{}` must be in allowed_types unless you use `*`.
+- 📝 **Dynamic templates** — insert variables, data, or text directly into code blocks.  
+- 🔀 **Wildcards & multi-types** — `*` for any type, `[int;float]` for multiple types.  
+- ⚡ **Sequential generation** — create `var1…var10`, functions, logs, or repetitive code effortlessly.  
+- 💎 **Readable & reusable** — templates clearly separate static text from dynamic values.  
 
 ---
 
-## Template Rules
+## ⚡ Quick Demo
 
-- `{type,length}`  
-  - `type` = type name (str, int, float, list)  
-  - `length` = exact number (e.g., 5) or range (e.g., 2:7)  
-  - Use `*` to skip a check  
+```python
+from ditto import phrase
 
-- `{}` placeholders in the template are replaced in order with the arguments you pass when calling the `ditto` object.
+# Dynamic print statements
+log = phrase("print('User {} scored {} points')")
+log("Alice", 10)
+log("Bob", 15)
 
----
+# Generate sequential variables
+v = phrase("var{} = {}")
+for i in range(1, 6):
+    v(i, i**2)
+print(var3)  # 9
 
-## Example with List Expansion
-
-d = ditto("var{} = {}")
-d(["x", "y", "z"], "5**2")
-
-print(x)  # 25
-print(y)  # 25
-print(z)  # 25
-
-- Passing a list will execute the template for each element of the list.
-
----
-
-## Notes
-
-- Minimal, safe usage relies on controlling your template and arguments.  
-- Designed for learning and simple dynamic template execution.  
+# Multi-type & wildcard
+g = phrase("process({[int;float],*}, {str,*})")
+g(3.14, "data")
+```
 
 ---
 
-## License
+## 🔥 Why Ditto?
 
-MIT
+Some repetitive Python code is **messy to compress** with loops or functions, especially when:
+
+- Variable names or functions change per line  
+- Literal text is mixed with dynamic data  
+- You want **executed templates** instead of just strings  
+
+Ditto makes it **easy, readable, and beautiful**.  
+
+---
+
+## ⚡ Installation
+
+```bash
+# Just copy ditto.py into your project
+```
+
+MIT License

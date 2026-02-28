@@ -1,47 +1,55 @@
-# ditto.py
 import re
-from itertools import product
+import builtins
 
-allowed_types = [str, int, float, list]
+def phrase(template):
+    rules = []
 
-class ditto:
-    def __init__(self, phrase):
-        self.rules = []
-
-        def r(m):
-            text = m.group(1).strip()
-            if not text:
-                self.rules.append((object, None))
-                return "{}"
-            
-            parts = [p.strip() for p in text.split(",")]
-            if len(parts) == 2:
-                t_str, label = parts
-                t = next((typ for typ in allowed_types if typ.__name__ == t_str), object)
-            else:
-                t, label = object, None
-            self.rules.append((t, label))
+    def parse_placeholder(match):
+        content = match.group(1).strip()
+        if not content:
+            rules.append((object, None))
             return "{}"
 
-        self.template = re.sub(r"\{([^}]*)\}", r, phrase)
+        parts       = content.split(",")
+        type_name   = parts[0].strip()
+        length_part = parts[1].strip()
 
-    def __call__(self, *args):
-        lists = [v for v in args if isinstance(v, list)]
-        scalars = [v for v in args if not isinstance(v, list)]
+        if type_name == '*':
+            expected_type = object
+        else:
+            expected_type = getattr(builtins, type_name, None)
+            if expected_type is None:
+                raise TypeError(f"'{type_name}' is not a recognised built-in type")
 
-        if not lists:
-            self._check_types(args)
-            print(self.template.format(*args))
-            return
+        if length_part == "*":
+            length_rule = None
+        elif ":" not in length_part:
+            raise ValueError(
+                f"Length rule '{length_part}' is invalid — "
+                f"use 'min:max' format or '*' to skip the length check"
+            )
+        else:
+            start, end = map(int, length_part.split(":"))
+            length_rule = range(start, end + 1)
 
-        for combo in product(*lists):
-            current_args = combo + tuple(scalars)
-            self._check_types(current_args)
-            print(self.template.format(*current_args))
+        rules.append((expected_type, length_rule))
+        return "{}"
 
-    def _check_types(self, args):
-        for v, (t, _) in zip(args, self.rules):
-            if t is object:
-                continue
-            if not isinstance(v, t):
-                raise TypeError(f"Expected type {t.__name__} but got {type(v).__name__}")
+    clean_template = re.sub(r"\{([^}]*)\}", parse_placeholder, template)
+
+    def call(*args):
+        for value, (expected_type, length_rule) in zip(args, rules):
+            if expected_type is not object and not isinstance(value, expected_type):
+                raise TypeError(
+                    f"Expected {expected_type.__name__}, got {type(value).__name__}"
+                )
+            if length_rule is not None:
+                actual_len = len(str(value))
+                if actual_len not in length_rule:
+                    raise ValueError(
+                        f"Length {actual_len} must be between "
+                        f"{length_rule.start} and {length_rule.stop - 1}"
+                    )
+        exec(clean_template.format(*args), globals())
+
+    return call

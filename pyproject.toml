@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dittoX"
+version = "0.0.1"
+authors = [
+  { name="scooterking38", email="elijaharagonmorgan@gmail.com" },
+]
+description = "Mini-engine for generating and executing dynamic code templates : fast, readable, and incredibly flexible."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/Scooterking38/dittoX"
+Issues = "https://github.com/Scooterking38/dittoX/issues"

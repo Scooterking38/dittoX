@@ -8,7 +8,7 @@ class Ditto:
         # shared environment for exec
         self.env = {"__builtins__": __builtins__}
         self.customrules = {}
-
+        self.skip = 0
     def error(self, code, ctx={}):
         match code:
             case 1: raise TypeError(f"'{ctx['name']}' is not a recognised built-in type")

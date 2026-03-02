@@ -2,14 +2,18 @@ import re
 import builtins
 
 class Ditto:
-    ANY = "*"
+
+    ANY = '*'
 
     def __init__(self):
         # shared environment for exec
         self.env = {"__builtins__": builtins}
         self.customrules = {}
         self.skip = 0
-    def error(self, code, ctx={}):
+        
+        
+    def error(self, code, ctx=None):
+        ctx = ctx or {}
         match code:
             case 1: raise TypeError(f"'{ctx['name']}' is not a recognised built-in type")
             case 2: raise ValueError(f"Length rule '{ctx['part']}' must be 'min:max' or '*'")

@@ -6,7 +6,7 @@ class Ditto:
 
     def __init__(self):
         # shared environment for exec
-        self.env = {"__builtins__": __builtins__}
+        self.env = {"__builtins__": builtins}
         self.customrules = {}
         self.skip = 0
     def error(self, code, ctx={}):

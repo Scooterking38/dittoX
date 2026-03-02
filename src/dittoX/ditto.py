@@ -10,58 +10,42 @@ class Ditto:
         self.customrules = {}
         self.skip = 0
         
-    def error(self, code, mandatory=0, inserts=None):
-        inserts = inserts or []
-        match mandatory, code:
-            # mandatory=0 → always raise
-            case 0, 1:
-                raise TypeError(f"'{inserts[0]}' is not a recognised built-in type")
-            case 0, 2:
-                raise ValueError(f"Length rule '{inserts[0]}' must be 'min:max' or '*'")
-            case 0, 3:
-                raise ValueError(f"Expected {inserts[0]} argument(s), got {inserts[1]}")
-            case 0, 4:
-                raise ValueError("Must be data in template")
-            case 0, 5:
-                raise ValueError(f"Length {inserts[0]} must be between {inserts[1]} and {inserts[2]}")
-            case 0, 7:
-                raise ValueError("Value must fit rule")
-            # mandatory=1 → raise only if skip flag is not set
-            case 1, 1:
-                if not self.skip:
-                    raise TypeError(f"Expected {inserts[1]}, got {type(inserts[0]).__name__}")
-            case 1, 5:
-                if not self.skip:
-                    raise ValueError(f"Length {inserts[0]} must be between {inserts[1]} and {inserts[2]}")
-            case 1, 7:
-                if not self.skip:
-                    raise ValueError("Value must fit rule")
+def error(self, code, mandatory=0, inserts=None):
+    inserts = inserts or []
 
-    def skipErrors(self):
-        self.skip = 1
+    match mandatory, code:
+        # mandatory = 1 → always raise
+        case 1, 1: raise TypeError(f"Expected {inserts[1]}, got {type(inserts[0]).__name__}")
+        case 1, 5: raise ValueError(f"Length {inserts[0]} must be between {inserts[1]} and {inserts[2]}")
+        case 1, 7: raise ValueError("Value must fit rule")
+
+        # mandatory = 0 → raise only if skip is not set
+        case 0, 1: raise TypeError(f"'{inserts[0]}' is not a recognised built-in type") if not self.skip else None
+        case 0, 2: raise ValueError(f"Length rule '{inserts[0]}' must be 'min:max' or '*'") if not self.skip else None
+        case 0, 3: raise ValueError(f"Expected {inserts[0]} argument(s), got {inserts[1]}") if not self.skip else None
+        case 0, 4: raise ValueError("Must be data in template") if not self.skip else None
+        case 0, 5: raise ValueError(f"Length {inserts[0]} must be between {inserts[1]} and {inserts[2]}") if not self.skip else None
+        case 0, 7: raise ValueError("Value must fit rule") if not self.skip else None
+                    
+    def skipErrors(self): self.skip = 1
     
-    def customrule(self, name, text):
-        func = eval(text)
-        self.customrules[name] = func
-
+    def customrule(self, name, text): self.customrules[name] = eval(text) if isinstance(text, str) else text
+        
     def phrase(self, template):
         rules = []
 
         def parse_placeholder(match):
-            content = match.group(1).strip()
-            parts = content.split(",") + [self.ANY]*3
+            content = match.group(1).strip().split(",") + [self.ANY]*3
             type_name, length_part, custom_part = map(str.strip, parts[:3])
             
             type_name = type_name or self.ANY
             length_part = length_part or self.ANY
             custom_part = custom_part or self.ANY
 
-            if type_name == self.ANY:
-                expected_type = self.ANY
+            if type_name == self.ANY: expected_type = self.ANY
             else:
                 expected_type = getattr(builtins, type_name, None)
-                if expected_type is None:
-                    self.error(1, 0, [type_name])
+                if expected_type is None: self.error(1, 0, [type_name])
 
             if length_part == self.ANY:
                 length_rule = None

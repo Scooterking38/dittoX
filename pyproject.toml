@@ -4,6 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dittoX"
+version = "0.0.0"  # ← ADD THIS
 authors = [
   { name="scooterking38", email="elijaharagonmorgan@gmail.com" },
 ]
@@ -20,3 +21,6 @@ license-files = ["LICEN[CS]E*"]
 [project.urls]
 Homepage = "https://github.com/Scooterking38/dittoX"
 Issues = "https://github.com/Scooterking38/dittoX/issues"
+
+[tool.hatch.version]   # ← ADD THIS BLOCK
+path = "pyproject.toml"

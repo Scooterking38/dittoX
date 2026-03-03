@@ -6,9 +6,9 @@ build-backend = "hatchling.build"
 name = "dittoX"
 dynamic = ["version"]
 authors = [
-  { name="scooterking38", email="elijaharagonmorgan@gmail.com" },
+  { name="scooterking38", email="mrwe3838@gmail.com" },
 ]
-description = "Mini-engine for generating and executing dynamic code templates : fast, readable, and incredibly flexible."
+description = "Mini-engine for generating and executing dynamic code templates: fast, readable, and incredibly flexible."
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [
@@ -16,7 +16,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 license = "MIT"
-license-files = ["LICEN[CS]E*"]
+license-files = ["LICENSE*"]
 
 [project.urls]
 Homepage = "https://github.com/Scooterking38/dittoX"

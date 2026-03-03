@@ -30,16 +30,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install hatch
 
-      - name: Generate pyproject.toml
+      - name: Generate pyproject.toml with hardcoded version
         run: |
-          cat > pyproject.toml << 'EOF'
+          cat > pyproject.toml << EOF
           [build-system]
           requires = ["hatchling >= 1.26"]
           build-backend = "hatchling.build"
 
           [project]
           name = "dittoX"
-          dynamic = ["version"]
+          version = "${{ github.event.inputs.version }}"
           authors = [
             { name = "scooterking38", email = "mrwe3838@gmail.com" },
           ]
@@ -56,13 +56,9 @@ jobs:
           [project.urls]
           Homepage = "https://github.com/Scooterking38/dittoX"
           Issues = "https://github.com/Scooterking38/dittoX/issues"
-
-          [tool.hatch.version]
-          EOF
+EOF
 
       - name: Build & Publish
-        env:
-          HATCH_BUILD_VERSION: ${{ github.event.inputs.version }}
         run: |
           hatch build
           hatch publish

@@ -4,7 +4,6 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dittoX"
-version = "0.0.1"
 authors = [
   { name="scooterking38", email="elijaharagonmorgan@gmail.com" },
 ]

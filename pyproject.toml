@@ -4,7 +4,10 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dittoX"
-version = "0.0.0"  # ← ADD THIS
+
+dynamic = ["version"] 
+[tool.hatch.version]
+path = "pyproject.toml"
 authors = [
   { name="scooterking38", email="elijaharagonmorgan@gmail.com" },
 ]

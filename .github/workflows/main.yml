@@ -32,8 +32,7 @@ jobs:
 
       - name: Build & Publish
         env:
-          HATCH_VERSION: ${{ github.event.inputs.version }}
+          HATCH_BUILD_VERSION: ${{ github.event.inputs.version }}
         run: |
-          # Build and publish with dynamic version
-          hatch build --version "$HATCH_VERSION"
-          hatch publish --version "$HATCH_VERSION"
+          hatch build
+          hatch publish

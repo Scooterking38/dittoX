@@ -23,4 +23,3 @@ Homepage = "https://github.com/Scooterking38/dittoX"
 Issues = "https://github.com/Scooterking38/dittoX/issues"
 
 [tool.hatch.version]
-path = "pyproject.toml"

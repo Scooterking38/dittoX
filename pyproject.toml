@@ -24,6 +24,3 @@ license-files = ["LICEN[CS]E*"]
 [project.urls]
 Homepage = "https://github.com/Scooterking38/dittoX"
 Issues = "https://github.com/Scooterking38/dittoX/issues"
-
-[tool.hatch.version]   # ← ADD THIS BLOCK
-path = "pyproject.toml"

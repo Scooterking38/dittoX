@@ -4,10 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dittoX"
-
-dynamic = ["version"] 
-[tool.hatch.version]
-path = "pyproject.toml"
+dynamic = ["version"]
 authors = [
   { name="scooterking38", email="elijaharagonmorgan@gmail.com" },
 ]
@@ -24,3 +21,6 @@ license-files = ["LICEN[CS]E*"]
 [project.urls]
 Homepage = "https://github.com/Scooterking38/dittoX"
 Issues = "https://github.com/Scooterking38/dittoX/issues"
+
+[tool.hatch.version]
+path = "pyproject.toml"

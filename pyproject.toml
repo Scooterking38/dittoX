@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "dittoX"
 dynamic = ["version"]
 authors = [
-  { name="scooterking38", email="mrwe3838@gmail.com" },
+  { name = "scooterking38", email = "mrwe3838@gmail.com" },
 ]
 description = "Mini-engine for generating and executing dynamic code templates: fast, readable, and incredibly flexible."
 readme = "README.md"

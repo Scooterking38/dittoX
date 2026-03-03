@@ -30,6 +30,36 @@ jobs:
           python -m pip install --upgrade pip
           pip install hatch
 
+      - name: Generate pyproject.toml
+        run: |
+          cat > pyproject.toml << 'EOF'
+          [build-system]
+          requires = ["hatchling >= 1.26"]
+          build-backend = "hatchling.build"
+
+          [project]
+          name = "dittoX"
+          dynamic = ["version"]
+          authors = [
+            { name = "scooterking38", email = "mrwe3838@gmail.com" },
+          ]
+          description = "Mini-engine for generating and executing dynamic code templates: fast, readable, and incredibly flexible."
+          readme = "README.md"
+          requires-python = ">=3.9"
+          classifiers = [
+              "Programming Language :: Python :: 3",
+              "Operating System :: OS Independent",
+          ]
+          license = "MIT"
+          license-files = ["LICENSE*"]
+
+          [project.urls]
+          Homepage = "https://github.com/Scooterking38/dittoX"
+          Issues = "https://github.com/Scooterking38/dittoX/issues"
+
+          [tool.hatch.version]
+          EOF
+
       - name: Build & Publish
         env:
           HATCH_BUILD_VERSION: ${{ github.event.inputs.version }}

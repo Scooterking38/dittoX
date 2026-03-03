@@ -4,6 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dittoX"
+version = "0.0.0"       # ← placeholder for Hatch to parse
 dynamic = ["version"]
 authors = [
   { name="scooterking38", email="mrwe3838@gmail.com" },

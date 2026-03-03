@@ -12,10 +12,6 @@ jobs:
   publish:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-      id-token: write   # Required for Trusted Publishing
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -58,7 +54,9 @@ jobs:
           Issues = "https://github.com/Scooterking38/dittoX/issues"
 EOF
 
-      - name: Build & Publish
+      - name: Build & Publish to PyPI
+        env:
+          HATCH_PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
         run: |
           hatch build
           hatch publish

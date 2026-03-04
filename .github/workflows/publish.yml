@@ -1,9 +1,10 @@
-name: Publish on pyproject.toml Change
+name: Publish Package
 
 on:
+  workflow_dispatch:  # manual trigger
   push:
     paths:
-      - "pyproject.toml"
+      - "pyproject.toml"  # triggers when TOML changes
 
 jobs:
   publish:
@@ -24,7 +25,7 @@ jobs:
           pip install hatch
 
       - name: Build package
-        run: hatch build
+        run: hatch build  # default wheel build
+
       - name: Publish package
-        run: hatch publish -u __token__ -a "${{ secrets.PYPI_TOKEN }}"      - name: Publish package
-        
+        run: hatch publish -u __token__ -a "${{ secrets.PYPI_TOKEN }}"

@@ -26,37 +26,36 @@ jobs:
           python -m pip install --upgrade pip
           pip install hatch
 
-      - name: Generate pyproject.toml with hardcoded version
+      - name: Validate version
         run: |
-          cat > pyproject.toml << EOF
-          [build-system]
-          requires = ["hatchling >= 1.26"]
-          build-backend = "hatchling.build"
+          if [[ ! "${{ github.event.inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version format (must be X.Y.Z)"
+            exit 1
+          fi
 
-          [project]
-          name = "dittoX"
-          version = "${{ github.event.inputs.version }}"
-          authors = [
-            { name = "scooterking38", email = "mrwe3838@gmail.com" },
-          ]
-          description = "Mini-engine for generating and executing dynamic code templates: fast, readable, and incredibly flexible."
-          readme = "README.md"
-          requires-python = ">=3.9"
-          classifiers = [
-              "Programming Language :: Python :: 3",
-              "Operating System :: OS Independent",
-          ]
-          license = "MIT"
-          license-files = ["LICENSE*"]
+      - name: Generate pyproject.toml
+        run: |
+          cat > pyproject.toml <<EOF
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
 
-          [project.urls]
-          Homepage = "https://github.com/Scooterking38/dittoX"
-          Issues = "https://github.com/Scooterking38/dittoX/issues"
+[project]
+name = "dittoX"
+version = "${{ github.event.inputs.version }}"
+authors = [{ name = "scooterking38", email = "mrwe3838@gmail.com" }]
+description = "Mini-engine for generating and executing dynamic code templates: fast, readable, and incredibly flexible."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+
+[project.urls]
+Homepage = "https://github.com/Scooterking38/dittoX"
+Issues = "https://github.com/Scooterking38/dittoX/issues"
 EOF
 
-      - name: Build & Publish to PyPI
-        env:
-          HATCH_PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-        run: |
-          hatch build
-          hatch publish
+      - name: Build
+        run: hatch build --sdist --wheel
+
+      - name: Publish
+        run: hatch publish -u __token__ -a "${{ secrets.PYPI_TOKEN }}"

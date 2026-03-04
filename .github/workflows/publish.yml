@@ -25,8 +25,6 @@ jobs:
 
       - name: Build package
         run: hatch build
-
       - name: Publish package
-        env:
-          HATCH_INDEX_AUTH: ${{ secrets.PYPI_TOKEN }}
-        run: hatch publish
+        run: hatch publish -u __token__ -a "${{ secrets.PYPI_TOKEN }}"      - name: Publish package
+        

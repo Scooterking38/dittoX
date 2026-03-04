@@ -1,39 +1,32 @@
-name: Publish on Tag
+name: Publish on pyproject.toml Change
 
 on:
   push:
-    tags:
-      - "v*"
+    paths:
+      - "pyproject.toml"
 
 jobs:
   publish:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - run: pip install hatch
-
-      - name: Get version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-
-      - name: Write pyproject
+      - name: Install Hatch
         run: |
-          printf "%s\n" \
-"[build-system]" \
-"requires = [\"hatchling>=1.26\"]" \
-"build-backend = \"hatchling.build\"" \
-"" \
-"[project]" \
-"name = \"dittoX\"" \
-"version = \"${VERSION}\"" \
-"requires-python = \">=3.9\"" \
-> pyproject.toml
+          python -m pip install --upgrade pip
+          pip install hatch
 
-      - run: hatch build --sdist --wheel
+      - name: Build package
+        run: hatch build --sdist --wheel
 
-      - run: hatch publish -u __token__ -a "${{ secrets.PYPI_TOKEN }}"
+      - name: Publish package
+        env:
+          HATCH_INDEX_AUTH: ${{ secrets.PYPI_TOKEN }}
+        run: hatch publish

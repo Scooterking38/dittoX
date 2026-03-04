@@ -24,7 +24,7 @@ jobs:
           pip install hatch
 
       - name: Build package
-        run: hatch build --sdist --wheel
+        run: hatch build
 
       - name: Publish package
         env:

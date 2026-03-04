@@ -1,23 +1,18 @@
-name: Publish
+name: Publish on Tag
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: "Version to publish (e.g. 0.2.0)"
-        required: true
-        type: string
+  push:
+    tags:
+      - "v*"
 
 jobs:
   publish:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -26,12 +21,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install hatch
 
-      - name: Validate version
+      - name: Extract version from tag
         run: |
-          if [[ ! "${{ github.event.inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Invalid version format (must be X.Y.Z)"
-            exit 1
-          fi
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Generate pyproject.toml
         run: |
@@ -42,7 +35,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dittoX"
-version = "${{ github.event.inputs.version }}"
+version = "${VERSION}"
 authors = [{ name = "scooterking38", email = "mrwe3838@gmail.com" }]
 description = "Mini-engine for generating and executing dynamic code templates: fast, readable, and incredibly flexible."
 readme = "README.md"

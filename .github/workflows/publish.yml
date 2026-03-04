@@ -1,7 +1,39 @@
-name: test
-on: push
+name: Publish on Tag
+
+on:
+  push:
+    tags:
+      - "v*"
+
 jobs:
-  t:
+  publish:
     runs-on: ubuntu-latest
+
     steps:
-      - run: echo hi
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install hatch
+
+      - name: Get version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+      - name: Write pyproject
+        run: |
+          printf "%s\n" \
+"[build-system]" \
+"requires = [\"hatchling>=1.26\"]" \
+"build-backend = \"hatchling.build\"" \
+"" \
+"[project]" \
+"name = \"dittoX\"" \
+"version = \"${VERSION}\"" \
+"requires-python = \">=3.9\"" \
+> pyproject.toml
+
+      - run: hatch build --sdist --wheel
+
+      - run: hatch publish -u __token__ -a "${{ secrets.PYPI_TOKEN }}"
